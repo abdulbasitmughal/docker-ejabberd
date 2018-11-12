@@ -45,6 +45,9 @@ stop_scripts() {
     run_scripts "stop"
 }
 
+join_cluster_scripts(){
+    run_scripts "cluster"
+}
 
 ctl() {
     local action="$1"
@@ -84,6 +87,10 @@ case "$@" in
         child=$!
         ${EJABBERDCTL} "started"
         post_scripts
+        #await for 10 seconds before call the join cluster function.
+        #Wihtout that await the command ejabberdctl join_cluster ended unsuccessful for some reason. 
+        sleep 10
+	      join_cluster_scripts
         wait $child
     ;;
     live)
